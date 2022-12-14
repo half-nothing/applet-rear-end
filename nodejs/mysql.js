@@ -1,12 +1,17 @@
 const mysql = require('mysql2');
 const {logger, Error, Function} = require("./logger");
-const {
-    MYSQL_USERNAME: username,
-    MYSQL_PASSWORD: password,
-    MYSQL_ADDRESS: host = "127.0.0.1",
-    MYSQL_PORT: port = 3306,
-    MYSQL_NAME: dbname = 'WeiXin'
-} = process.env;
+// const {
+//     MYSQL_USERNAME: username,
+//     MYSQL_PASSWORD: password,
+//     MYSQL_ADDRESS: host = "127.0.0.1",
+//     MYSQL_PORT: port = 3306,
+//     MYSQL_NAME: dbname = 'WeiXin'
+// } = process.env;
+host="sh-cynosdbmysql-grp-3zvjnzmk.sql.tencentcdb.com"
+username="root"
+port=24391
+dbname="WeiXin"
+password="iavfGemi2bXIYP1RqYNj4zp7QfHTA8Be"
 const database = mysql.createPool(({
     host: host,
     user: username,
@@ -15,15 +20,15 @@ const database = mysql.createPool(({
     port: port
 }))
 
-function RunSQLCommand(sql, param = []) {
-    Function.info(`Call function RunSQLCommand`);
+function run_SQL_command(sql, param = []) {
+    Function.info(`Call function run_SQL_command`);
     return new Promise((res, rej) => {
         database.query(sql, param, (err, result) => err ? rej(err) : res(result));
     });
 }
 
-function addUser(userinfo) {
-    Function.info(`Call function AddUser`);
+function add_user(userinfo) {
+    Function.info(`Call function add_user`);
     return new Promise((res, rej) => {
         database.query('INSERT INTO Users (uuid, token, openid, salt, name, isvip, isadmin) VALUES(?,?,?,?,?,?,?);',
             [userinfo.UUID, userinfo.token, userinfo.openid, userinfo.salt, userinfo.name, userinfo.isvip, userinfo.isadmin],
@@ -31,9 +36,18 @@ function addUser(userinfo) {
     })
 }
 
+function get_user_info(uuid){
+    Function.info(`Call function check_uuid`);
+    return new Promise((res, rej) => {
+        database.query('SELECT uuid,token,openid,salt,name FROM Users WHERE uuid = ?;',
+            [uuid],
+            (err, result) => err ? rej(err) : res(result))
+    })
+}
+
 function initDB() {
     Function.info(`Call function initDB`);
-    RunSQLCommand("CREATE TABLE IF NOT EXISTS `Users`  " +
+    run_SQL_command("CREATE TABLE IF NOT EXISTS `Users`  " +
         "(`id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增序号，可以视为短uuid使用'," +
         "`uuid` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '每位用户唯一识别uuid'," +
         "`token` char(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '每位用户生成的token'," +
@@ -48,6 +62,7 @@ function initDB() {
         .catch(rej => Error.info(`${rej}`));
 }
 
-module.exports.SQLCommand = RunSQLCommand;
-module.exports.AddUser = addUser;
+module.exports.SQL_command = run_SQL_command;
+module.exports.AddUser = add_user;
+module.exports.GetInfo = get_user_info;
 module.exports.initDB = initDB;

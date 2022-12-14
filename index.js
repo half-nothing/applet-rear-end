@@ -15,6 +15,7 @@ const cookieKey = stringRandom(64, {numbers: false});
 const {logger} = require('./nodejs/logger.js');
 // 导入自定义路由并挂载
 const {router} = require('./router/api');
+const {initDB} = require("./nodejs/mysql");
 app.use('/', router);
 // 定义POST表单解析和json数据解析
 app.use(express.urlencoded({extended: false}));
@@ -31,6 +32,8 @@ app.use(session({
     },
     rolling: true,
 }));
+// 初始化数据库
+initDB()
 // 定义访问记录中间件
 app.use((req, res, next) => {
     logger.info(`Client call ${req.path} from ${req.ip}`);
@@ -38,8 +41,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(80,()=>{
-    logger.debug('Server is running!');
+    logger.debug('Server start complete');
 });
-
-
-
