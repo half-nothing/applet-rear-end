@@ -36,7 +36,13 @@ module.exports.login = (req, res) => {
         AddUser(userinfo).then((res, rej) => {
             if (!rej){
                 logger.info(res);
+                res.send({token: userinfo.token, UUID : userinfo.UUID, name: userinfo.name, status: 'success'});
+            }else {
+                res.statusCode = 503;
+                res.send({status: 'fail', err: '数据库执行错误'})
             }
         });
+    }else {
+        res.send({status: 'fail', err: '未检测到openID'});
     }
 }
