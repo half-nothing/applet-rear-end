@@ -2,7 +2,7 @@ const {md5, sha1} = require('../nodejs/algorithm.js');
 const uuid = require('uuid');
 const stringRandom = require('string-random');
 const {AddUser, GetInfo} = require('../nodejs/mysql.js');
-const {logger, Error} = require("../nodejs/logger");
+const {logger} = require("../nodejs/logger");
 
 function getUserId(req){
     if (req.headers["x-wx-source"]){
@@ -34,6 +34,7 @@ module.exports.login = (req, res) => {
         GetInfo(userinfo.UUID).then((res,rej)=>{
            if(!rej){
                logger.info(res.toString());
+               // if (res.length === 0){
                if (res === []){
                    userinfo.salt = stringRandom(16, {numbers: false})
                    userinfo.token = genToken(userinfo.UUID, userinfo.openid, userinfo.salt);
