@@ -1,17 +1,12 @@
 const mysql = require('mysql2');
 const {logger, Error, Function} = require("./logger");
-// const {
-//     MYSQL_USERNAME: username,
-//     MYSQL_PASSWORD: password,
-//     MYSQL_ADDRESS: host = "127.0.0.1",
-//     MYSQL_PORT: port = 3306,
-//     MYSQL_NAME: dbname = 'WeiXin'
-// } = process.env;
-host="sh-cynosdbmysql-grp-3zvjnzmk.sql.tencentcdb.com"
-username="root"
-port=24391
-dbname="WeiXin"
-password="iavfGemi2bXIYP1RqYNj4zp7QfHTA8Be"
+const {
+    MYSQL_USERNAME: username,
+    MYSQL_PASSWORD: password,
+    MYSQL_ADDRESS: host = "127.0.0.1",
+    MYSQL_PORT: port = 3306,
+    MYSQL_NAME: dbname = 'WeiXin'
+} = process.env;
 const database = mysql.createPool(({
     host: host,
     user: username,
