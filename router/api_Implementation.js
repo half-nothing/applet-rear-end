@@ -2,7 +2,7 @@ const {md5, sha1} = require('../nodejs/algorithm.js');
 const uuid = require('uuid');
 const stringRandom = require('string-random');
 const {AddUser, GetInfo} = require('../nodejs/mysql.js');
-const {logger} = require("../nodejs/logger");
+// const {logger} = require("../nodejs/logger");
 
 function getUserId(req){
     if (req.headers["x-wx-source"]){
@@ -33,7 +33,6 @@ module.exports.login = (req, res) => {
         userinfo.UUID = uuid.v5(userinfo.openid, '6ba7b810-9dad-11d1-80b4-00c04fd430c8').replace(/-/g, '');
         GetInfo(userinfo.UUID).then((res,rej)=>{
            if(!rej){
-               logger.info(res.toString());
                if (res.length === 0){
                    userinfo.salt = stringRandom(16, {numbers: false})
                    userinfo.token = genToken(userinfo.UUID, userinfo.openid, userinfo.salt);
@@ -43,15 +42,16 @@ module.exports.login = (req, res) => {
                            res.statusCode = 503;
                            res_copy.send({status: 'fail', err: '数据库执行错误'})
                        }
+                       res_copy.send({token: userinfo.token, UUID : userinfo.UUID, name: userinfo.name, status: 'success'});
                    });
                }else {
                     userinfo.UUID = res[0].uuid;
                     userinfo.token = res[0].token;
                     userinfo.name = res[0].name;
+                    res_copy.send({token: userinfo.token, UUID : userinfo.UUID, name: userinfo.name, status: 'success'});
                }
            }
         });
-        res_copy.send({token: userinfo.token, UUID : userinfo.UUID, name: userinfo.name, status: 'success'});
     }else {
         res.send({status: 'fail', err: '未检测到openID'});
     }

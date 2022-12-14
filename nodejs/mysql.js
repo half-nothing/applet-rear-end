@@ -58,7 +58,7 @@ function initDB() {
         "`isadmin` tinyint(1) NULL DEFAULT 0 COMMENT '是否是管理员'," +
         "PRIMARY KEY (`id`, `uuid`, `token`) USING BTREE) " +
         "ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;", [])
-        .then(res => logger.error(`Creat table \'Users\' successfully.`))
+        .then(res => logger.info(`Creat table \'Users\' successfully.`))
         .catch(rej => Error.info(`${rej}`));
 }
 
