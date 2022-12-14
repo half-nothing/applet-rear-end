@@ -34,8 +34,7 @@ module.exports.login = (req, res) => {
         GetInfo(userinfo.UUID).then((res,rej)=>{
            if(!rej){
                logger.info(res.toString());
-               // if (res.length === 0){
-               if (res === []){
+               if (res.length === 0){
                    userinfo.salt = stringRandom(16, {numbers: false})
                    userinfo.token = genToken(userinfo.UUID, userinfo.openid, userinfo.salt);
                    userinfo.name = 'Unknown';
