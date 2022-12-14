@@ -37,5 +37,9 @@ app.use((req, res, next) => {
     next();
 });
 
+app.listen(80,()=>{
+    logger.debug('Server is running!');
+});
+
 
 
