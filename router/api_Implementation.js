@@ -2,7 +2,7 @@ const {md5, sha1} = require('../nodejs/algorithm.js');
 const uuid = require('uuid');
 const stringRandom = require('string-random');
 const {AddUser} = require('../nodejs/mysql.js');
-const {logger} = require("../nodejs/logger");
+const {logger, Error} = require("../nodejs/logger");
 
 function getUserId(req){
     if (req.headers["x-wx-source"]){
@@ -39,6 +39,7 @@ module.exports.login = (req, res) => {
                 res.send({token: userinfo.token, UUID : userinfo.UUID, name: userinfo.name, status: 'success'});
             }else {
                 res.statusCode = 503;
+                Error.error(rej);
                 res.send({status: 'fail', err: '数据库执行错误'})
             }
         });
